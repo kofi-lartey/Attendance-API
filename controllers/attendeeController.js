@@ -46,12 +46,12 @@ export const allAttendee = async(req,res) =>{
 export const getAttendee = async(req,res) =>{
     try {
         const attendeeID = req.params.id;
-        const attendance = await Attendee.findById(attendeeID);
-        if(!attendeeID){
+        const attendee = await Attendee.findById(attendeeID);
+        if(!attendee){
             return res.status(400).json({message:'Atendee does not exist'})
         }
         console.log('All Atendance',attendance)
-        return res.status(200).json({message:'These are all the Members',attendance})
+        return res.status(200).json({message:'This is your Attendee',attendance})
         
     } catch (error) {
         return res.status(500).json({message:error.message})

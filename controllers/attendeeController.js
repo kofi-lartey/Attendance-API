@@ -50,8 +50,8 @@ export const getAttendee = async(req,res) =>{
         if(!attendee){
             return res.status(400).json({message:'Atendee does not exist'})
         }
-        console.log('All Atendance',attendance)
-        return res.status(200).json({message:'This is your Attendee',attendance})
+        console.log('All Atendance',attendee)
+        return res.status(200).json({message:'This is your Attendee',attendee})
         
     } catch (error) {
         return res.status(500).json({message:error.message})

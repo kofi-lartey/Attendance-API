@@ -23,7 +23,7 @@ export const attendeeModel = new Schema({
     },
     role:{
         type: String,
-        enum:['admin','member','vistor'],
+        enum:['admin','member','visitor'],
         required: true
     }
 }, { timestamps: true })

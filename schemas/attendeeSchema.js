@@ -1,0 +1,12 @@
+import Joi from "joi";
+
+export const attendanceSchema = Joi.object({
+    staffID: Joi.string(),
+    fullName: Joi.string().required(),
+    position: Joi.string().required(),
+    email: Joi.string().required(),
+    contact: Joi.string().required(),
+    role: Joi.string()
+        .valid('admin', 'member', 'visitor')
+        .required()
+})

@@ -1,0 +1,87 @@
+import { Attendee } from "../models/attendeeModel.js"
+import { attendanceSchema} from "../schemas/attendeeSchema.js"
+import { staffIDGenerator } from "../utils/additionals.js"
+
+export const attendee = async(req,res) =>{
+    try {
+        const {error,value} = attendanceSchema.validate(req.body)
+        if(error){
+            return res.status(400).json({message:error.details[0].message})
+        }
+        const{fullName} = value
+        // check if user already exist
+        const findUser = await Attendee.findOne({fullName})
+        if(findUser){
+            return res.status(400).json({message:"Name ALready Exist"})
+        }
+        // Generate staff IDs
+        const staffID = staffIDGenerator(6)
+        // crate Attendance
+        const attendance = await Attendee.create({
+            ...value,
+            staffID:staffID
+        });
+        return res.status(200).json({message:'Attendance Created',attendance})
+    } catch (error) {
+        console.log('Error',error)
+        return res.status(500).json({message:error.message})
+    }
+}
+
+
+export const allAttendee = async(req,res) =>{
+    try {
+        const attendance = await Attendee.find();
+        if(attendance.length == 0){
+            return res.status(400).json({message:'Empty'})
+        }
+        console.log('All Atendance',attendance)
+        return res.status(200).json({message:'These are all the Members',attendance})
+        
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}
+
+export const getAttendee = async(req,res) =>{
+    try {
+        const attendeeID = req.params.id;
+        const attendance = await Attendee.findById(attendeeID);
+        if(!attendeeID){
+            return res.status(400).json({message:'Atendee does not exist'})
+        }
+        console.log('All Atendance',attendance)
+        return res.status(200).json({message:'These are all the Members',attendance})
+        
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}
+
+export const getAttendeequary = async (req, res) => {
+  try {
+    const { query } = req; // e.g., /api/attendee?staffID=EMP123 OR ?fullName=John Doe
+
+    // Check if neither staffID nor fullName is provided
+    if (!query.staffID && !query.fullName) {
+      return res.status(400).json({ message: 'Please provide staffID or fullName' });
+    }
+
+    // Build search criteria dynamically
+    const searchCriteria = {};
+    if (query.staffID) searchCriteria.staffID = query.staffID;
+    if (query.fullName) searchCriteria.fullName = query.fullName;
+
+    // Find matching attendees
+    const attendees = await Attendee.find(searchCriteria);
+
+    if (attendees.length === 0) {
+      return res.status(404).json({ message: 'No attendee found with given details' });
+    }
+
+    return res.status(200).json({ message: 'Attendee(s) found', attendees });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+

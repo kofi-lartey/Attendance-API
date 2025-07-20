@@ -135,3 +135,59 @@ export const attendanceOut = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
+export const allAtendance = async(req,res)=>{
+    try {
+        const attendance = await Attendance.find().populate('attendee')
+        if(attendance.length == 0){
+            return res.status(400).json({message:'No attendance'})
+        }
+        return res.status(200).json({messgae:'These are all the Attendance',attendance})
+    } catch (error) {
+        return res.status(500).json({message:error.message}) 
+    }
+}
+
+
+export const getTodaysAttendance = async (req, res) => {
+  try {
+    const today = new Date();
+
+    // Set time to start of the day (00:00:00)
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    // Set time to end of the day (23:59:59)
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const attendanceRecords = await Attendance.find({
+      createdAt: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    }).populate('attendee'); // optional: if you want employee details
+
+    res.status(200).json({ success: true, data: attendanceRecords });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+export const getSingleAttendeeAttendance = async(req,res)=>{
+    try {
+        const {staffID} = req.body
+        // search for the id inputed from the body
+        const findID = await Attendee.findOne({staffID:staffID})
+        if(!findID){
+            return res.status(400).json({message:'Invalid or Non-Existing ID'})
+        }
+        // get all the users attendance
+        const getAttendance = await Attendance.find({staffID:staffID}).populate('attendee')
+        if(getAttendance.length == 0){
+            return res.status(400).json({message:"no attendance for this ID"})
+        }
+        return res.status(200).json({message:`All Attendance for ${staffID}:`,getAttendance})
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+        
+    }
+}

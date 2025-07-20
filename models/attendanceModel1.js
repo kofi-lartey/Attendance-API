@@ -18,7 +18,11 @@ export const attendanceModel = new Schema({
     status: {
         type: String,
         enum: ['early', 'late', 'ontime'],
-    }
+    },
+    attendee:{
+        type: Schema.Types.ObjectId,
+        ref: 'Attendee',
+    },
 }, { timestamps: true })
 attendanceModel.plugin(normalize)
 

@@ -7,6 +7,14 @@ export const attendanceSchema = Joi.object({
     email: Joi.string().required(),
     contact: Joi.string().required(),
     role: Joi.string()
-        .valid('admin','member','visitor')
+        .valid('admin', 'member', 'visitor')
+        .required()
+})
+
+export const attendanceloginSchema = Joi.object({
+    staffID: Joi.string().required(),
+    fullName: Joi.string().required(),
+    role: Joi.string()
+        .valid('admin', 'member', 'visitor')
         .required()
 })

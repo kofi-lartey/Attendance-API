@@ -1,5 +1,5 @@
 import { Attendee } from "../models/attendeeModel.js"
-import { attendanceSchema } from "../schemas/attendeeSchema.js"
+import { attendanceloginSchema, attendanceSchema } from "../schemas/attendeeSchema.js"
 import { staffIDGenerator } from "../utils/additionals.js"
 import { sendIDEmail } from "../utils/mailer.js"
 
@@ -98,3 +98,78 @@ export const getAttendeequary = async (req, res) => {
     }
 };
 
+// login as Admin
+export const adminLoginAtendee = async(req,res) =>{
+    try {
+        const {error,value} = attendanceloginSchema.validate(req.body)
+        if(error){
+            return res.status(400).json({message:error.details[0].message})
+        }
+        const{role, staffID} = value
+        // find attendee in the db
+        const findAttendee = await Attendee.findOne({staffID})
+        if(!findAttendee){
+            return res.status(400).json({message:'Attendee not Available, Please create Attendee'})
+        }
+        // lets check the roles to allow access to it dashboard
+        const Attendeerole = findAttendee.role
+        if(Attendeerole !== "admin" || role !== "admin"){
+            return res.status(400).json({message:'❌You are not an Admin'})
+        }
+        console.log('Found User', findAttendee)
+        return res.status(200).json({message:'Admin Login Successfully🎉', findAttendee})
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}
+
+// login as Member
+export const memberLoginAtendee = async(req,res) =>{
+    try {
+        const {error,value} = attendanceloginSchema.validate(req.body)
+        if(error){
+            return res.status(400).json({message:error.details[0].message})
+        }
+        const{role, staffID} = value
+        // find attendee in the db
+        const findAttendee = await Attendee.findOne({staffID})
+        if(!findAttendee){
+            return res.status(400).json({message:'Attendee not Available, Please create Attendee'})
+        }
+        // lets check the roles to allow access to it dashboard
+        const Attendeerole = findAttendee.role
+        if(Attendeerole !== "member" || role !== "member"){
+            return res.status(400).json({message:'❌You are not a Member'})
+        }
+        console.log('Found User', findAttendee)
+        return res.status(200).json({message:'Member Login Successfully🎉', findAttendee})
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}
+
+// login as Visitor
+export const visitorLoginAtendee = async(req,res) =>{
+    try {
+        const {error,value} = attendanceloginSchema.validate(req.body)
+        if(error){
+            return res.status(400).json({message:error.details[0].message})
+        }
+        const{role, staffID} = value
+        // find attendee in the db
+        const findAttendee = await Attendee.findOne({staffID})
+        if(!findAttendee){
+            return res.status(400).json({message:'Attendee not Available, Please create Attendee'})
+        }
+        
+        // lets check the roles to allow access to it dashboard
+        const Attendeerole = findAttendee.role
+        if(Attendeerole !== "visitor" || role !== "visitor"){
+           return res.status(400).json({message:'❌ You are not a Visitor'})
+        }
+        console.log('Found User', findAttendee)
+        return res.status(200).json({message:'Visitor Login Successfully🎉', findAttendee})
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}

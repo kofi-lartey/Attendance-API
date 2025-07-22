@@ -4,11 +4,11 @@ import normalize from 'normalize-mongoose'
 export const attendeeModel = new Schema({
     workID: {
         type: String,
-        required: true
+        // required: true
     },
     staffID: {
         type: String,
-        required: true
+        // required: true
     },
     fullName: {
         type: String,

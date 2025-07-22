@@ -15,9 +15,9 @@ export const attendance = async (req, res) => {
         // Step 1: Extract image URLs
         const imageUrls = req.files?.map(file => file.path) || [];
 
-        const { staffID } = value
+        const { staffID, workID } = value
         // Find user
-        const attendee = await Attendee.findOne({ staffID: staffID });
+        const attendee = await Attendee.findOne({$or: [{ staffID }, { workID }]});
         if (!attendee) {
             return res.status(400).json({ message: 'Attendee not found' });
         }
@@ -29,7 +29,7 @@ export const attendance = async (req, res) => {
         tomorrow.setDate(today.getDate() + 1);
 
         const existingAttendance = await Attendance.findOne({
-            staffID: staffID,
+            $or: [{ staffID }, { workID }],
             date: {
                 $gte: today,
                 $lt: tomorrow
@@ -57,9 +57,13 @@ export const attendance = async (req, res) => {
             status = 'ontime';
         }
 
+        const StaffID = attendee.staffID
+        const WorkID = attendee.workID
         // Create attendance
         const attendanceData = await Attendance.create({
             ...value,
+            staffID:StaffID,
+            workID:WorkID,
             date: now,
             checkIn: clockInTime,
             status,
@@ -88,10 +92,10 @@ export const attendanceOut = async (req, res) => {
         // Step 1: Extract image URLs
         const imageUrls = req.files?.map(file => file.path) || [];
 
-        const { staffID} = value;
+        const { staffID, workID} = value;
 
         // Check if the attendee exists
-        const attendee = await Attendee.findOne({ staffID });
+        const attendee = await Attendee.findOne({$or: [{ staffID }, { workID }]});
         if (!attendee) {
             return res.status(400).json({ message: 'Attendee not found' });
         }
@@ -104,7 +108,7 @@ export const attendanceOut = async (req, res) => {
 
         // Find today's attendance record
         const existingAttendance = await Attendance.findOne({
-            staffID,
+            $or: [{ staffID }, { workID }],
             date: {
                 $gte: today,
                 $lt: tomorrow
@@ -182,14 +186,14 @@ export const getTodaysAttendance = async (req, res) => {
 
 export const getSingleAttendeeAttendance = async(req,res)=>{
     try {
-        const {staffID} = req.body
+        const {staffID, workID} = req.body
         // search for the id inputed from the body
-        const findID = await Attendee.findOne({staffID:staffID})
+        const findID = await Attendee.findOne({$or: [{ staffID }, { workID }]})
         if(!findID){
             return res.status(400).json({message:'Invalid or Non-Existing ID'})
         }
         // get all the users attendance
-        const getAttendance = await Attendance.find({staffID:staffID}).populate('attendee')
+        const getAttendance = await Attendance.find({$or: [{ staffID }, { workID }]}).populate('attendee')
         if(getAttendance.length == 0){
             return res.status(400).json({message:"no attendance for this ID"})
         }

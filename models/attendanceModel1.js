@@ -4,7 +4,9 @@ import normalize from 'normalize-mongoose'
 export const attendanceModel = new Schema({
     staffID: {
         type: String,
-        required: true
+    },
+    workID: {
+        type: String,
     },
     date: {
         type: Date,

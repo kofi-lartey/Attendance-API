@@ -19,6 +19,9 @@ export const attendanceModel = new Schema({
         type: String,
         enum: ['early', 'late', 'ontime'],
     },
+    images: {
+        type: [String],
+    },
     attendee:{
         type: Schema.Types.ObjectId,
         ref: 'Attendee',

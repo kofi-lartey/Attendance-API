@@ -12,6 +12,9 @@ export const attendance = async (req, res) => {
             return res.status(400).json({ message: error.details[0].message });
         }
 
+        // Step 1: Extract image URLs
+        const imageUrls = req.files?.map(file => file.path) || [];
+
         const { staffID } = value
         // Find user
         const attendee = await Attendee.findOne({ staffID: staffID });
@@ -59,7 +62,8 @@ export const attendance = async (req, res) => {
             ...value,
             date: now,
             checkIn: clockInTime,
-            status
+            status,
+            images: imageUrls
         });
 
         return res.status(200).json({
@@ -81,7 +85,10 @@ export const attendanceOut = async (req, res) => {
             return res.status(400).json({ message: error.details[0].message });
         }
 
-        const { staffID } = value;
+        // Step 1: Extract image URLs
+        const imageUrls = req.files?.map(file => file.path) || [];
+
+        const { staffID} = value;
 
         // Check if the attendee exists
         const attendee = await Attendee.findOne({ staffID });
@@ -124,6 +131,7 @@ export const attendanceOut = async (req, res) => {
 
         // Update attendance with check-out time
         existingAttendance.checkOut = clockOutTime;
+        existingAttendance.images = imageUrls
         await existingAttendance.save();
 
         return res.status(200).json({

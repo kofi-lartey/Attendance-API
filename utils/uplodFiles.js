@@ -7,7 +7,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "Ebe_Farms", // Cloudinary folder name
+    folder: "Attendance_Api", // Cloudinary folder name
     allowed_formats: ["jpg", "jpeg", "png"],
     transformation: [{ width: 800, height: 800, crop: "limit" }] // optional
   },

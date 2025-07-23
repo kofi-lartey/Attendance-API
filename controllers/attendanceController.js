@@ -92,7 +92,7 @@ export const attendanceOut = async (req, res) => {
         }
 
         // Step 1: Extract image URLs
-        const imageUrls = req.files?.map(file => file.path) || [];
+        // const imageUrls = req.files?.map(file => file.path) || [];
 
         const { staffID, workID } = value;
 
@@ -137,7 +137,6 @@ export const attendanceOut = async (req, res) => {
 
         // Update attendance with check-out time
         existingAttendance.checkOut = clockOutTime;
-        existingAttendance.images = imageUrls
         await existingAttendance.save();
 
         return res.status(200).json({

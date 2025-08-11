@@ -2,6 +2,10 @@ import { model, Schema } from "mongoose";
 import normalize from 'normalize-mongoose'
 
 export const attendanceModel = new Schema({
+    ID: {
+        type: String,
+        required: true,
+    },
     staffID: {
         type: String,
     },

@@ -6,28 +6,33 @@ import { checkInattendance, checkOutattendance } from "../schemas/attendanceSche
 export const attendance = async (req, res) => {
     try {
 
-        // Validate input
+        // Validate the request body.
         const { error, value } = checkInattendance.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
 
-        // Step 1: Extract image URLs
+        // Extract image URLs from uploaded files.
         const imageUrls = req.files?.map(file => file.path) || [];
 
-        const { staffID, workID } = value
-        // Find user
-        const attendee = await Attendee.findOne({ $or: [{ staffID }, { workID }] });
+        // Extract the universal ID from the validated input.
+        const { ID } = value;
+        
+        // Find the user using the universal ID.
+        const attendee = await Attendee.findOne({ $or: [{ staffID: ID }, { workID: ID }] });
+        
+        // If no attendee is found with the provided ID, return an error.
         if (!attendee) {
             return res.status(400).json({ message: 'Attendee not found' });
         }
 
-        // Get today's start and end (for checking duplicates)
+        // Get today's start and end times to check for a duplicate attendance record.
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
 
+        // Check if an attendance record already exists for the found attendee today.
         const existingAttendance = await Attendance.findOne({
             staffID: attendee.staffID,
             workID: attendee.workID,
@@ -37,18 +42,18 @@ export const attendance = async (req, res) => {
             }
         });
 
+        // If a record already exists, prevent a duplicate check-in.
         if (existingAttendance) {
             return res.status(400).json({
                 message: 'Attendance already submitted for today'
             });
         }
 
-
-        // Get current time
+        // Get the current time for the check-in.
         const now = new Date();
-        const clockInTime = now.toTimeString().split(' ')[0]; // "HH:MM:SS"
+        const clockInTime = now.toTimeString().split(' ')[0];
 
-        // Compare using only time (with fixed base date)
+        // Define a threshold time (e.g., 9:00 AM) and compare the check-in time.
         const threshold = new Date(`1970-01-01T09:00:00`);
         const actualClockIn = new Date(`1970-01-01T${clockInTime}`);
 
@@ -58,29 +63,32 @@ export const attendance = async (req, res) => {
         } else if (actualClockIn.getTime() === threshold.getTime()) {
             status = 'ontime';
         }
-
-        const StaffID = attendee.staffID
-        const WorkID = attendee.workID
-        // Create attendance
+        
+        // Create the new attendance record in the database by explicitly
+        // passing the required fields, including the ID from the request.
         const attendanceData = await Attendance.create({
-            ...value,
-            staffID: StaffID,
-            workID: WorkID,
+            ID: ID, // <-- This line is added to fix the database validation error
+            staffID: attendee.staffID,
+            workID: attendee.workID,
             date: now,
             checkIn: clockInTime,
             status,
             images: imageUrls
         });
 
+        // Respond with a success message and the new attendance data.
         return res.status(200).json({
             message: 'Attendance Created Successfully 🎉',
             attendanceData
         });
 
     } catch (error) {
+        // Handle any server-side errors.
         return res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // checkOut
 export const attendanceOut = async (req, res) => {

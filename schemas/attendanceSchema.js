@@ -2,6 +2,7 @@ import Joi from "joi"
 
 export const checkInattendance = Joi.object({
     checkIn: Joi.string(),
+    ID: Joi.string().required(),
     staffID: Joi.string(),
     workID: Joi.string(),
     date: Joi.date(),
@@ -12,6 +13,7 @@ export const checkInattendance = Joi.object({
 
 export const checkOutattendance = Joi.object({
     checkOut: Joi.string(),
+    ID: Joi.string().required(),
     staffID: Joi.string(),
     workID: Joi.string(),
     date: Joi.date(),

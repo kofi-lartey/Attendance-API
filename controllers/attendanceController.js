@@ -17,10 +17,10 @@ export const attendance = async (req, res) => {
 
         // Extract the universal ID from the validated input.
         const { ID } = value;
-        
+
         // Find the user using the universal ID.
         const attendee = await Attendee.findOne({ $or: [{ staffID: ID }, { workID: ID }] });
-        
+
         // If no attendee is found with the provided ID, return an error.
         if (!attendee) {
             return res.status(400).json({ message: 'Attendee not found' });
@@ -63,7 +63,7 @@ export const attendance = async (req, res) => {
         } else if (actualClockIn.getTime() === threshold.getTime()) {
             status = 'ontime';
         }
-        
+
         // Create the new attendance record in the database by explicitly
         // passing the required fields, including the ID from the request.
         const attendanceData = await Attendance.create({
@@ -93,57 +93,58 @@ export const attendance = async (req, res) => {
 // checkOut
 export const attendanceOut = async (req, res) => {
     try {
-        // Validate input
+        // Validate input using the checkOutattendance schema, which should expect an 'ID'.
         const { error, value } = checkOutattendance.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
 
-        // Step 1: Extract image URLs
-        // const imageUrls = req.files?.map(file => file.path) || [];
+        // Extract the universal ID from the validated input.
+        const { ID } = value;
 
-        const { staffID, workID } = value;
-
-        // Check if the attendee exists
-        const attendee = await Attendee.findOne({ $or: [{ staffID }, { workID }] });
+        // Check if the attendee exists using the universal ID.
+        // The $or operator allows a match if the ID corresponds to either staffID or workID.
+        const attendee = await Attendee.findOne({ $or: [{ staffID: ID }, { workID: ID }] });
         if (!attendee) {
             return res.status(400).json({ message: 'Attendee not found' });
         }
 
-        // Get today's start and end
+        // Get today's start and end times to find today's attendance record.
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
 
-        // Find today's attendance record
+        // Find today's attendance record for the specific attendee who was just found.
+        // We use the attendee's staffID and workID to ensure we update the correct record.
         const existingAttendance = await Attendance.findOne({
-            $or: [{ staffID }, { workID }],
+            staffID: attendee.staffID,
+            workID: attendee.workID,
             date: {
                 $gte: today,
                 $lt: tomorrow
             }
         });
 
-        // If no clock-in record found, user must check in first
+        // If no clock-in record found, the user must check in first.
         if (!existingAttendance) {
             return res.status(400).json({
                 message: 'You have not checked in today.'
             });
         }
 
-        // If already checked out
+        // If a check-out time already exists, prevent a second check-out.
         if (existingAttendance.checkOut) {
             return res.status(400).json({
                 message: 'You have already checked out today.'
             });
         }
 
-        // Get current clock-out time
+        // Get the current clock-out time.
         const now = new Date();
         const clockOutTime = now.toTimeString().split(' ')[0]; // "HH:MM:SS"
 
-        // Update attendance with check-out time
+        // Update the existing attendance record with the new check-out time.
         existingAttendance.checkOut = clockOutTime;
         await existingAttendance.save();
 
@@ -153,9 +154,11 @@ export const attendanceOut = async (req, res) => {
         });
 
     } catch (error) {
+        // Handle any server-side errors.
         return res.status(500).json({ message: error.message });
     }
 };
+
 
 export const allAtendance = async (req, res) => {
     try {

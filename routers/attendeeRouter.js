@@ -1,14 +1,14 @@
 
 
 import { Router } from "express";
-import { adminLoginAtendee, allAttendee, attendee, getAttendee, getAttendeequary, memberLoginAtendee, visitorLoginAtendee } from "../controllers/attendeeController.js";
+import { LoginAtendee, allAttendee, attendee, getAttendee, getAttendeequary, memberLoginAtendee, visitorLoginAtendee } from "../controllers/attendeeController.js";
 // import { attendance, getEmployeeWithAttendance, userAttendance } from "../controllers/attendanceController.js";
 
 
 export const attendeeRoute = Router();
 
 attendeeRoute.post('/attendee',attendee)
-attendeeRoute.post('/Admin-attendee',adminLoginAtendee)
+attendeeRoute.post('/login-attendee',LoginAtendee)
 attendeeRoute.post('/Member-attendee',memberLoginAtendee)
 attendeeRoute.post('/Visitor-attendee',visitorLoginAtendee)
 attendeeRoute.get('/attendee',allAttendee)

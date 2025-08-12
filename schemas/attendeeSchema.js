@@ -13,10 +13,8 @@ export const attendanceSchema = Joi.object({
 })
 
 export const attendanceloginSchema = Joi.object({
+    ID: Joi.string(),
     workID: Joi.string(),
     staffID: Joi.string(),
     fullName: Joi.string().required(),
-    role: Joi.string()
-        .valid('admin', 'member', 'visitor')
-        .required()
 })

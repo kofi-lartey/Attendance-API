@@ -99,31 +99,34 @@ export const getAttendeequary = async (req, res) => {
     }
 };
 
-// login as Admin
-export const adminLoginAtendee = async (req, res) => {
+// login
+export const LoginAtendee = async (req, res) => {
     try {
         const { error, value } = attendanceloginSchema.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
 
-        const { role, staffID, workID } = value;
+        // Extract the universal ID from the validated input.
+        const { ID } = value;
 
-        // Find attendee by either staffID or workID
-        const findAttendee = await Attendee.findOne({
-            $or: [{ staffID }, { workID }],
-        });
+        // Check if the attendee exists using the universal ID.
+        // The $or operator allows a match if the ID corresponds to either staffID or workID.
+        const attendee = await Attendee.findOne({ $or: [{ staffID: ID }, { workID: ID }] });
+        if (!attendee) {
+            return res.status(400).json({ message: 'Attendee not found' });
+        }
 
-        if (!findAttendee) {
+        if (!attendee) {
             return res.status(400).json({ message: 'Attendee not available. Please create Attendee.' });
         }
 
-        if (findAttendee.role !== 'admin' || role !== 'admin') {
-            return res.status(403).json({ message: '❌ You are not an Admin' });
-        }
+        // if (findAttendee.role !== 'admin' || role !== 'admin') {
+        //     return res.status(403).json({ message: '❌ You are not an Admin' });
+        // }
 
-        console.log('Found User:', findAttendee);
-        return res.status(200).json({ message: 'Admin Login Successfully 🎉', attendee: findAttendee });
+        console.log('Found User:', attendee);
+        return res.status(200).json({ message: 'Login Successfully 🎉', attendee: attendee });
 
     } catch (error) {
         return res.status(500).json({ message: error.message });

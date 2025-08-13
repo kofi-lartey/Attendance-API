@@ -2,6 +2,7 @@ import { Attendance } from "../models/attendanceModel1.js";
 import { Attendee } from "../models/attendeeModel.js";
 import { checkInattendance, checkOutattendance } from "../schemas/attendanceSchema.js";
 
+
 // checkIn
 export const attendance = async (req, res) => {
     try {
@@ -19,7 +20,8 @@ export const attendance = async (req, res) => {
         const { ID } = value;
 
         // Find the user using the universal ID.
-        const attendee = await Attendee.findOne({ $or: [{ staffID: ID }, { workID: ID }] });
+        const attendee = await Attendee.findOne({ 
+            $or: [{ staffID: ID }, { workID: ID }] });
 
         // If no attendee is found with the provided ID, return an error.
         if (!attendee) {
@@ -73,7 +75,8 @@ export const attendance = async (req, res) => {
             date: now,
             checkIn: clockInTime,
             status,
-            images: imageUrls
+            position: attendee.position,
+            images: imageUrls 
         });
 
         // Respond with a success message and the new attendance data.

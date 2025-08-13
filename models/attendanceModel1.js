@@ -28,6 +28,9 @@ export const attendanceModel = new Schema({
     images: {
         type: [String],
     },
+    position: {
+        type: String,
+    },
     attendee:{
         type: Schema.Types.ObjectId,
         ref: 'Attendee',

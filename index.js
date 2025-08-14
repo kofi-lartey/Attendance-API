@@ -15,6 +15,11 @@ dotenv.config();
 app.use('/api/V1',attendanceRoute)
 app.use('/api/V1',attendeeRoute)
 
+// help the app start early
+app.get('/api/V1/ping', (req, res) => {
+  res.json({ status: "ok" });
+});
+
 await mongoose.connect(MONGOURI)
 
 app.listen(PORT, ()=>{

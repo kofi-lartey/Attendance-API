@@ -100,7 +100,7 @@ export const getAttendeequary = async (req, res) => {
 };
 
 // login
-export const LoginAtendee = async (req, res) => {
+export const loginAtendee = async (req, res) => {
     try {
         const { error, value } = attendanceloginSchema.validate(req.body);
         if (error) {

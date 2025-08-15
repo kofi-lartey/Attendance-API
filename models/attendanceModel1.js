@@ -6,9 +6,9 @@ export const attendanceModel = new Schema({
         type: String,
         required: true,
     },
-    IP: {
-        type: String,
-    },
+    // IP: {
+    //     type: String,
+    // },
     staffID: {
         type: String,
     },

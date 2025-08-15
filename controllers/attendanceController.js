@@ -1,8 +1,8 @@
 import { Attendance } from "../models/attendanceModel1.js";
 import { Attendee } from "../models/attendeeModel.js";
 import { checkInattendance, checkOutattendance } from "../schemas/attendanceSchema.js";
-import pkg from 'ipaddr.js';
-const ipaddr = pkg;
+// import pkg from 'ipaddr.js';
+// const ipaddr = pkg;
 
 
 
@@ -11,55 +11,55 @@ const ipaddr = pkg;
 export const attendance = async (req, res) => {
     try {
 
-        // Define an array of allowed IP ranges in CIDR notation.
-        // IMPORTANT: You must replace these example CIDR ranges with the actual ranges
-        // provided by your company's network administrator or ISP.
-        const allowedCIDRs = ['192.168.100.0/24', '203.0.113.0/29'];
+        // // Define an array of allowed IP ranges in CIDR notation.
+        // // IMPORTANT: You must replace these example CIDR ranges with the actual ranges
+        // // provided by your company's network administrator or ISP.
+        // const allowedCIDRs = ['192.168.100.0/24', '203.0.113.0/29'];
 
-        // Get the IP address of the client making the request.
-        const clientIP = req.ip;
+        // // Get the IP address of the client making the request.
+        // const clientIP = req.ip;
 
-        // This flag will be true if the IP is within any of the allowed ranges.
-        let isIPAllowed = false;
+        // // This flag will be true if the IP is within any of the allowed ranges.
+        // let isIPAllowed = false;
 
-        // First, check if the IP is a local loopback address.
-        // This is necessary for testing on a local machine using Postman.
-        if (clientIP === '::1' || clientIP === '127.0.0.1') {
-            isIPAllowed = true;
-        } else {
-            // Use a try...catch block to handle potential errors from invalid IP formats.
-            let clientAddress;
-            try {
-                // This processes the IP address string and returns an object
-                // that represents either an IPv4 or IPv6 address.
-                clientAddress = ipaddr.parse(clientIP);
-            } catch (error) {
-                // If the IP address is invalid, return an error message immediately.
-                console.error(`Error parsing IP address "${clientIP}":`, error.message);
-                return res.status(400).json({
-                    message: 'Invalid client IP address format.'
-                });
-            }
+        // // First, check if the IP is a local loopback address.
+        // // This is necessary for testing on a local machine using Postman.
+        // if (clientIP === '::1' || clientIP === '127.0.0.1') {
+        //     isIPAllowed = true;
+        // } else {
+        //     // Use a try...catch block to handle potential errors from invalid IP formats.
+        //     let clientAddress;
+        //     try {
+        //         // This processes the IP address string and returns an object
+        //         // that represents either an IPv4 or IPv6 address.
+        //         clientAddress = ipaddr.parse(clientIP);
+        //     } catch (error) {
+        //         // If the IP address is invalid, return an error message immediately.
+        //         console.error(`Error parsing IP address "${clientIP}":`, error.message);
+        //         return res.status(400).json({
+        //             message: 'Invalid client IP address format.'
+        //         });
+        //     }
 
-            // Iterate through the array of allowed CIDR ranges.
-            for (const cidr of allowedCIDRs) {
-                // ipaddr.js has a specific method for checking if an IP is in a subnet.
-                // We first parse the CIDR string to get the range.
-                const range = ipaddr.parseCIDR(cidr);
-                // Check if the client's IP is within the current range.
-                if (clientAddress.match(range)) {
-                    isIPAllowed = true;
-                    break; // Exit the loop once a match is found.
-                }
-            }
-        }
+        //     // Iterate through the array of allowed CIDR ranges.
+        //     for (const cidr of allowedCIDRs) {
+        //         // ipaddr.js has a specific method for checking if an IP is in a subnet.
+        //         // We first parse the CIDR string to get the range.
+        //         const range = ipaddr.parseCIDR(cidr);
+        //         // Check if the client's IP is within the current range.
+        //         if (clientAddress.match(range)) {
+        //             isIPAllowed = true;
+        //             break; // Exit the loop once a match is found.
+        //         }
+        //     }
+        // }
 
         // If the IP is not in any of the allowed ranges, reject the request.
-        if (!isIPAllowed) {
-            return res.status(403).json({
-                message: 'Attendance can only be submitted from an allowed company network.'
-            });
-        }
+        // if (!isIPAllowed) {
+        //     return res.status(403).json({
+        //         message: 'Attendance can only be submitted from an allowed company network.'
+        //     });
+        // }
 
         // Validate the request body using your Joi schema.
         const { error, value } = checkInattendance.validate(req.body);
@@ -132,7 +132,7 @@ export const attendance = async (req, res) => {
             status,
             position: attendee.position,
             images: imageUrls,
-            IP: clientIP // <-- Added this line to save the IP
+            // IP: clientIP // <-- Added this line to save the IP
         });
 
         // Respond with a success message and the new attendance data.
@@ -146,10 +146,6 @@ export const attendance = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
-
-
-
-
 
 
 

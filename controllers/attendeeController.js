@@ -34,7 +34,7 @@ export const attendee = async (req, res) => {
 
         const sendIDmail = await sendIDEmail(email, fullName, staffID, role);
         console.log('Sent Mail', sendIDmail)
-        return res.status(200).json({ message: 'Attendance Created', attendance })
+        return res.status(200).json({ message: 'Staff Created', attendance })
     } catch (error) {
         console.log('Error', error)
         return res.status(500).json({ message: error.message })
@@ -61,10 +61,10 @@ export const getAttendee = async (req, res) => {
         const attendeeID = req.params.id;
         const attendee = await Attendee.findById(attendeeID);
         if (!attendee) {
-            return res.status(400).json({ message: 'Atendee does not exist' })
+            return res.status(400).json({ message: 'Staff does not exist' })
         }
         console.log('All Atendance', attendee)
-        return res.status(200).json({ message: 'This is your Attendee', attendee })
+        return res.status(200).json({ message: 'Staff Details', attendee })
 
     } catch (error) {
         return res.status(500).json({ message: error.message })
@@ -90,10 +90,10 @@ export const getAttendeequary = async (req, res) => {
         const attendees = await Attendee.find(searchCriteria);
 
         if (attendees.length === 0) {
-            return res.status(404).json({ message: 'No attendee found with given details' });
+            return res.status(404).json({ message: 'No Staff found with given details' });
         }
 
-        return res.status(200).json({ message: 'Attendee(s) found', attendees });
+        return res.status(200).json({ message: 'Staff(s) found', attendees });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -114,11 +114,11 @@ export const loginAtendee = async (req, res) => {
         // The $or operator allows a match if the ID corresponds to either staffID or workID.
         const attendee = await Attendee.findOne({ $or: [{ staffID: ID }, { workID: ID }] });
         if (!attendee) {
-            return res.status(400).json({ message: 'Attendee not found' });
+            return res.status(400).json({ message: 'Staff not found' });
         }
 
         if (!attendee) {
-            return res.status(400).json({ message: 'Attendee not available. Please create Attendee.' });
+            return res.status(400).json({ message: 'Staff not available. Please create Attendee.' });
         }
 
         // if (findAttendee.role !== 'admin' || role !== 'admin') {

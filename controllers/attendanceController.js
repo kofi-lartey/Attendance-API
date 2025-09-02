@@ -256,6 +256,200 @@ export const getTodaysAttendance = async (req, res) => {
     }
 };
 
+// export const getThisYearsAttendance = async (req, res) => {
+//     try {
+//         // Get the year from the request body
+//         const { year } = req.body;
+
+//         // Check if the year is a valid number
+//         if (typeof year !== 'number' || isNaN(year)) {
+//             return res.status(400).json({ success: false, message: 'Invalid year provided.' });
+//         }
+
+//         // Set the start date to January 1st of the specified year
+//         const startOfYear = new Date(year, 0, 1);
+
+//         // Set the end date to December 31st of the specified year
+//         const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999);
+
+//         const attendanceRecords = await Attendance.find({
+//             createdAt: {
+//                 $gte: startOfYear,
+//                 $lte: endOfYear,
+//             },
+//         }).populate('attendee');
+
+//         res.status(200).json({ success: true, data: attendanceRecords });
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: error.message });
+//     }
+// };
+
+export const getThisYearsAttendance = async (req, res) => {
+    try {
+        
+        const today = new Date();
+        const year = today.getFullYear();
+
+        // Set time to start of the year (January 1st, 00:00:00)
+        const startOfYear = new Date(year, 0, 1);
+        // Set time to end of the year (December 31st, 23:59:59)
+        const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999);
+
+        const attendanceRecords = await Attendance.find({
+            createdAt: {
+                $gte: startOfYear,
+                $lte: endOfYear,
+            },
+        }).populate('attendee');
+
+        res.status(200).json({ success: true, data: attendanceRecords });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
+export const getThisMonthlyAttendance = async (req, res) => {
+    try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+
+        // Start of the current month
+        const startOfMonth = new Date(year, month, 1);
+
+        // End of the current month
+        // We get the first day of the next month and subtract 1 millisecond.
+        const endOfMonth = new Date(year, month + 1, 1);
+        endOfMonth.setMilliseconds(endOfMonth.getMilliseconds() - 1);
+
+        const attendanceRecords = await Attendance.find({
+            createdAt: {
+                $gte: startOfMonth,
+                $lte: endOfMonth,
+            },
+        }).populate('attendee');
+
+        res.status(200).json({ success: true, data: attendanceRecords });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const getThisWeeklyAttendance = async (req, res) => {
+    try {
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+        // Calculate the start of the week (Sunday)
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - dayOfWeek);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        // Calculate the end of the week (Saturday)
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        const attendanceRecords = await Attendance.find({
+            createdAt: {
+                $gte: startOfWeek,
+                $lte: endOfWeek,
+            },
+        }).populate('attendee');
+
+        res.status(200).json({ success: true, data: attendanceRecords });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const getAttendanceByTimeframe = async (req, res) => {
+    try {
+        const { year, month, day, week } = req.body;
+        let startDate, endDate;
+
+        if (year && month && day) {
+            // Case 1: Daily Attendance
+            startDate = new Date(year, month - 1, day);
+            endDate = new Date(year, month - 1, day, 23, 59, 59, 999);
+        } else if (year && month) {
+            // Case 2: Monthly Attendance
+            startDate = new Date(year, month - 1, 1);
+            endDate = new Date(year, month, 0, 23, 59, 59, 999);
+        } else if (year && week) {
+            // Case 3: Weekly Attendance
+            // Logic to calculate the start and end dates of the specified week
+            const startOfYear = new Date(year, 0, 1);
+            const firstDayOfWeek = startOfYear.getDay();
+            const daysSinceFirstMonday = (firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1); // ISO 8601 week starts on Monday
+            const startOfWeekDate = new Date(startOfYear.setDate(startOfYear.getDate() - daysSinceFirstMonday + (week - 1) * 7));
+            
+            startDate = startOfWeekDate;
+            endDate = new Date(startOfWeekDate.setDate(startOfWeekDate.getDate() + 6));
+            endDate.setHours(23, 59, 59, 999);
+        } else if (year) {
+            // Case 4: Yearly Attendance
+            startDate = new Date(year, 0, 1);
+            endDate = new Date(year, 11, 31, 23, 59, 59, 999);
+        } else {
+            // Default: Today's Attendance
+            const today = new Date();
+            startDate = new Date(today.setHours(0, 0, 0, 0));
+            endDate = new Date(today.setHours(23, 59, 59, 999));
+        }
+
+        const attendanceRecords = await Attendance.find({
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate,
+            },
+        }).populate('attendee');
+
+        res.status(200).json({ success: true, data: attendanceRecords });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const getAttendanceByPeriod = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.body;
+
+        // Validation for date strings
+        if (!startDate || !endDate) {
+            return res.status(400).json({ success: false, message: 'Both startDate and endDate are required.' });
+        }
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        // Check for valid date objects
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            return res.status(400).json({ success: false, message: 'Invalid date format provided.' });
+        }
+
+        // Set the end date to the last millisecond of the day
+        end.setHours(23, 59, 59, 999);
+
+        const attendanceRecords = await Attendance.find({
+            createdAt: {
+                $gte: start,
+                $lte: end,
+            },
+        }).populate('attendee');
+
+        if (attendanceRecords.length === 0) {
+            return res.status(400).json({ message: 'No attendance records found for the specified period.' });
+        }
+
+        res.status(200).json({ success: true, data: attendanceRecords });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 
 export const getSingleAttendeeAttendance = async (req, res) => {
     try {

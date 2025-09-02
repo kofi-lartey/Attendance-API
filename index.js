@@ -23,5 +23,5 @@ app.get('/api/V1/ping', (req, res) => {
 await mongoose.connect(MONGOURI)
 
 app.listen(PORT, ()=>{
-    console.log(`Server running on Port:${PORT}`)
+    console.log(`Server running on Port http://localhost:${PORT}`)
 })

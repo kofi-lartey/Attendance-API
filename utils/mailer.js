@@ -95,7 +95,7 @@ If you did not sign up with us, please ignore this email.`,
             </div>
 
             <!-- This is the container for the background image -->
-            <div style="padding: 24px; line-height: 1.6; background-image: url('https://ik.imagekit.io/w8cwibjr9/about-images-sq.png'); background-size: cover; background-repeat: no-repeat; background-position: center; background-color: #f0f4f7;">
+            <div style="padding: 24px; line-height: 1.6; background-image: url('https://ik.imagekit.io/w8cwibjr9/Background1.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; background-color: #f0f4f7;">
               <!-- This is the semi-transparent layer to make the text readable -->
               <div style="background-color: rgba(255, 255, 255, 0.7); padding: 10px;">
                 <h2 style="color: #2d7ff9; margin-top: 0;">👋 Welcome to Suku Technologies, <strong>${fullName}</strong>!</h2>

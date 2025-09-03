@@ -15,6 +15,8 @@ export const attendeeModel = new Schema({
     },
     position: {
         type: String,
+        enum: ['CEO', 'CONSULTANT', 'DEVELOPER', 'MARKETING/SALES OFFICER', 'MARKETING/SALES LEAD', 'OPERATIONS LEAD', 'TECHNICAL LEAD', 'INTERN', 'SERVICE PERSONNEL'],
+        required: true
     },
     email: {
         type: String,

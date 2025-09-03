@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { allAtendance, attendance, attendanceOut, getAttendanceByPeriod, getAttendanceByTimeframe, getSingleAttendeeAttendance, getThisMonthlyAttendance, getThisWeeklyAttendance, getThisYearsAttendance, getTodaysAttendance } from "../controllers/attendanceController.js";
+import { allAtendance, attendance, attendanceOut, checkID, getAttendanceByPeriod, getAttendanceByTimeframe, getSingleAttendeeAttendance, getThisMonthlyAttendance, getThisWeeklyAttendance, getThisYearsAttendance, getTodaysAttendance } from "../controllers/attendanceController.js";
 import { multipleImages } from "../utils/uplodFiles.js";
 
 // import { attendance, getEmployeeWithAttendance, userAttendance } from "../controllers/attendanceController.js";
@@ -18,4 +18,5 @@ attendanceRoute.get('/attendance-today',getTodaysAttendance)
 attendanceRoute.get('/attendance-timeFrame',getAttendanceByTimeframe)
 attendanceRoute.get('/attendance-period',getAttendanceByPeriod)
 attendanceRoute.get('/attendance-byID',getSingleAttendeeAttendance)
+attendanceRoute.get('/attendance-checkID',checkID)
 // attendanceRoute.get('/attendance/:id',)

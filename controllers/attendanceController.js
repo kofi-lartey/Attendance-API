@@ -4,7 +4,24 @@ import { checkInattendance, checkOutattendance } from "../schemas/attendanceSche
 // import pkg from 'ipaddr.js';
 // const ipaddr = pkg;
 
+export const checkID = async(req, res)=>{
+    try {
+        const {ID} = req.body
+        const attendee = await Attendee.findOne({
+            $or: [{ staffID: ID }, { workID: ID }]
+        });
 
+        // If no attendee is found with the provided ID, return an error.
+        if (!attendee) {
+            return res.status(400).json({ message: 'Staff not found' });
+        }
+        return res.status(200).json({message: 'Staff found', attendee})
+        
+    } catch (error) {
+        return res.status(500).json({message: error.message})
+        
+    }
+}
 
 // At the top of your file, import the 'ipaddr.js' library.
 
@@ -80,7 +97,7 @@ export const attendance = async (req, res) => {
 
         // If no attendee is found with the provided ID, return an error.
         if (!attendee) {
-            return res.status(400).json({ message: 'Attendee not found' });
+            return res.status(400).json({ message: 'Staff not found' });
         }
 
         // Get today's start and end times to check for a duplicate attendance record.

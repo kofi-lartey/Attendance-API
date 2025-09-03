@@ -5,41 +5,58 @@ import { sendIDEmail } from "../utils/mailer.js"
 
 export const attendee = async (req, res) => {
     try {
-        const { error, value } = attendanceSchema.validate(req.body)
+        const { error, value } = attendanceSchema.validate(req.body);
         if (error) {
-            return res.status(400).json({ message: error.details[0].message })
+            return res.status(400).json({ message: error.details[0].message });
         }
-        const { fullName, email, role } = value
-        // check if user already exist
-        const findUser = await Attendee.findOne({ fullName })
+
+        // Destructure all possible fields, including the new 'workID'
+        const { fullName, email, role, workID } = value;
+
+        // Check if user already exists
+        const findUser = await Attendee.findOne({ fullName });
         if (findUser) {
-            return res.status(400).json({ message: "Name ALready Exist" })
+            return res.status(400).json({ message: "Name Already Exist" });
         }
-        // check if user already exist
-        const findemail = await Attendee.findOne({ email })
+
+        // Check if email already exists
+        const findemail = await Attendee.findOne({ email });
         if (findemail) {
-            return res.status(400).json({ message: "Email ALready Exist" })
+            return res.status(400).json({ message: "Email Already Exist" });
         }
-        // Generate staff IDs
-        const staffID = staffIDGenerator(6)
-        // crate Attendance
+
+        // Determine which ID to use: the provided workID or a new generated staffID
+        let finalID;
+        if (workID) {
+            finalID = workID;
+            console.log("Using provided Work ID:", finalID);
+        } else {
+            finalID = staffIDGenerator(6);
+            console.log("Generating new Staff ID:", finalID);
+        }
+
+        // Create Attendance record with the determined ID
         const attendance = await Attendee.create({
             ...value,
-            staffID: staffID
+            staffID: finalID, // Save the final ID to the staffID field
         });
+
         console.log("Sending email to:", email);
         console.log("Full Name:", fullName);
-        console.log("Staff ID:", staffID);
+        console.log("Staff ID:", finalID); // Log the final ID
         console.log("Role:", role);
 
-        const sendIDmail = await sendIDEmail(email, fullName, staffID, role);
-        console.log('Sent Mail', sendIDmail)
-        return res.status(200).json({ message: 'Staff Created', attendance })
+        // Send the email with the determined final ID
+        const sendIDmail = await sendIDEmail(email, fullName, finalID, role);
+        console.log('Sent Mail', sendIDmail);
+
+        return res.status(200).json({ message: 'Staff Created', attendance });
+
     } catch (error) {
-        console.log('Error', error)
-        return res.status(500).json({ message: error.message })
+        console.log('Error', error);
+        return res.status(500).json({ message: error.message });
     }
-}
+};
 
 
 export const allAttendee = async (req, res) => {

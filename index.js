@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 import { MONGOURI, PORT } from './config/env.js';
 import { attendeeRoute } from './routers/attendeeRouter.js';
 import { attendanceRoute } from './routers/attendanceRouter.js';
+import { visitorsRouter } from './routers/visitorsRouter.js';
+import { deliveryRouter } from './routers/deliveryRouter.js';
 
 const app = express();
 
@@ -14,6 +16,8 @@ dotenv.config();
 
 app.use('/api/V1',attendanceRoute)
 app.use('/api/V1',attendeeRoute)
+app.use('/api/V1',visitorsRouter)
+app.use('/api/V1',deliveryRouter)
 
 // help the app start early
 app.get('/api/V1/ping', (req, res) => {

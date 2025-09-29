@@ -50,7 +50,10 @@ export const attendee = async (req, res) => {
         const sendIDmail = await sendIDEmail(email, fullName, finalID, role);
         console.log('Sent Mail', sendIDmail);
 
-        return res.status(200).json({ message: 'Staff Created succefully', attendance });
+        return res.status(200).json({ 
+            message: 'Staff Created succefully', 
+            attendance : attendance 
+        });
 
     } catch (error) {
         console.log('Error', error);

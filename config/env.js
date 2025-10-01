@@ -15,3 +15,7 @@ export const CLOUD_NAME = process.env.CLOUD_NAME
 export const CLOUD_API_KEY = process.env.CLOUD_API_KEY
 export const CLOUD_API_SECRET = process.env.CLOUD_API_SECRET
 export const CLIENT_URL = process.env.CLIENT_URL
+
+// sendGrid
+export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
+export const SENDGRID_API_KEY_ID = process.env.SENDGRID_API_KEY_ID

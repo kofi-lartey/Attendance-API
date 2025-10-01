@@ -1,16 +1,16 @@
-import nodemailer from 'nodemailer';
-import { SMTP_PASS, SMTP_USER } from '../config/env.js';
+// import nodemailer from 'nodemailer';
+// import { SMTP_PASS, SMTP_USER } from '../config/env.js';
 
-// Create a transporter for SMTP
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // upgrade later with STARTTLS
-  auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
-  },
-});
+// // Create a transporter for SMTP
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   port: 465,
+//   secure: true, // upgrade later with STARTTLS
+//   auth: {
+//     user: SMTP_USER,
+//     pass: SMTP_PASS,
+//   },
+// });
 
 // // otp mail
 // export const sendIDEmail = async (email, fullName, staffID, role) => {
@@ -72,68 +72,68 @@ const transporter = nodemailer.createTransport({
 //   }
 // };
 
-export const sendIDEmail = async (email, fullName, staffID, role) => {
-  try {
-    const info = await transporter.sendMail({
-      from: SMTP_USER,
-      to: email,
-      subject: "👋 Welcome to Suku Technologies – Your ID is Here!",
-      text: `Hello ${fullName}, welcome to Suku Technologies!
+// export const sendIDEmail = async (email, fullName, staffID, role) => {
+//   try {
+//     const info = await transporter.sendMail({
+//       from: SMTP_USER,
+//       to: email,
+//       subject: "👋 Welcome to Suku Technologies – Your ID is Here!",
+//       text: `Hello ${fullName}, welcome to Suku Technologies!
 
-Your Check-In/Check-Out ID is: ${staffID}
-Role: ${role}
+// Your Check-In/Check-Out ID is: ${staffID}
+// Role: ${role}
 
-Use this ID to check in and out whenever you arrive at or leave the workplace.
+// Use this ID to check in and out whenever you arrive at or leave the workplace.
 
-If you did not sign up with us, please ignore this email.`,
-      html: `
-        <div style="font-family: Arial, sans-serif; background-color: #f0f4f7; padding: 20px; text-align: center;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            
-            <div style="background-color: #032040; padding: 40px 20px;">
-              <img src="https://ik.imagekit.io/w8cwibjr9/WhatsApp_Image_2025-09-03_at_10.14.43_53cd1085-removebg-preview.png" alt="Suku Technologies Logo" style="max-width: 200px; display: block; margin: 0 auto;"/>
-            </div>
+// If you did not sign up with us, please ignore this email.`,
+//       html: `
+//         <div style="font-family: Arial, sans-serif; background-color: #f0f4f7; padding: 20px; text-align: center;">
+//           <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
-            <!-- This is the container for the background image -->
-            <div style="padding: 24px; line-height: 1.6; background-image: url('https://ik.imagekit.io/w8cwibjr9/Background1.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; background-color: #f0f4f7;">
-              <!-- This is the semi-transparent layer to make the text readable -->
-              <div style="background-color: rgba(255, 255, 255, 0.7); padding: 10px;">
-                <h2 style="color: #2d7ff9; margin-top: 0;">👋 Welcome to Suku Technologies, <strong>${fullName}</strong>!</h2>
+//             <div style="background-color: #032040; padding: 40px 20px;">
+//               <img src="https://ik.imagekit.io/w8cwibjr9/WhatsApp_Image_2025-09-03_at_10.14.43_53cd1085-removebg-preview.png" alt="Suku Technologies Logo" style="max-width: 200px; display: block; margin: 0 auto;"/>
+//             </div>
 
-                <p style="font-size: 16px; color: #333;">We're thrilled to have you join our team as a <strong>${role}</strong>.</p>
+//             <!-- This is the container for the background image -->
+//             <div style="padding: 24px; line-height: 1.6; background-image: url('https://ik.imagekit.io/w8cwibjr9/Background1.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; background-color: #f0f4f7;">
+//               <!-- This is the semi-transparent layer to make the text readable -->
+//               <div style="background-color: rgba(255, 255, 255, 0.7); padding: 10px;">
+//                 <h2 style="color: #2d7ff9; margin-top: 0;">👋 Welcome to Suku Technologies, <strong>${fullName}</strong>!</h2>
 
-                <p style="font-size: 16px; color: #333;">🔑 Your Check-In/Check-Out ID:</p>
-                <p style="font-size: 28px; font-weight: bold; color: #2d7ff9; margin: 10px 0;"><strong>${staffID}</strong></p>
+//                 <p style="font-size: 16px; color: #333;">We're thrilled to have you join our team as a <strong>${role}</strong>.</p>
 
-                <p style="font-size: 16px; color: #333;">
-                  Please use this unique ID to Check In and Check Out whenever you arrive at or leave the office.
-                </p>
-              </div>
-            </div>
+//                 <p style="font-size: 16px; color: #333;">🔑 Your Check-In/Check-Out ID:</p>
+//                 <p style="font-size: 28px; font-weight: bold; color: #2d7ff9; margin: 10px 0;"><strong>${staffID}</strong></p>
 
-            <div style="background-color: #f0f4f7; color: #888; font-size: 12px; padding: 20px; border-top: 1px solid #e1e1e1;">
-              <p style="margin: 0 0 5px;">Suku Technologies</p>
-              <p style="margin: 0 0 5px;">21 King Tackie Ave, Hilla Limann Hwy, Accra</p>
-              <p style="margin: 0;">
-                <a href="https://client1.sukutechnologies.com/" style="color: #2d7ff9; text-decoration: none;">sukutechnologies.com</a>
-              </p>
-            </div>
+//                 <p style="font-size: 16px; color: #333;">
+//                   Please use this unique ID to Check In and Check Out whenever you arrive at or leave the office.
+//                 </p>
+//               </div>
+//             </div>
 
-            <div style="padding: 10px 20px; background-color: #032040; color: #fff; font-size: 10px; text-align: center;">
-              <p style="margin: 0;">If you did not register with us, please ignore this email.</p>
-            </div>
+//             <div style="background-color: #f0f4f7; color: #888; font-size: 12px; padding: 20px; border-top: 1px solid #e1e1e1;">
+//               <p style="margin: 0 0 5px;">Suku Technologies</p>
+//               <p style="margin: 0 0 5px;">21 King Tackie Ave, Hilla Limann Hwy, Accra</p>
+//               <p style="margin: 0;">
+//                 <a href="https://client1.sukutechnologies.com/" style="color: #2d7ff9; text-decoration: none;">sukutechnologies.com</a>
+//               </p>
+//             </div>
 
-          </div>
-        </div>
-      `,
-    });
+//             <div style="padding: 10px 20px; background-color: #032040; color: #fff; font-size: 10px; text-align: center;">
+//               <p style="margin: 0;">If you did not register with us, please ignore this email.</p>
+//             </div>
 
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-  } catch (error) {
-    console.error("❌ Error while sending welcome email", error);
-  }
-};
+//           </div>
+//         </div>
+//       `,
+//     });
+
+//     console.log("Message sent: %s", info.messageId);
+//     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+//   } catch (error) {
+//     console.error("❌ Error while sending welcome email", error);
+//   }
+// };
 
 // export const sendIDEmail = async (email, fullName, staffID, role) => {
 //   try {
@@ -152,7 +152,7 @@ If you did not sign up with us, please ignore this email.`,
 //       html: `
 //         <div style="font-family: Arial, sans-serif; background-color: #f0f4f7; padding: 20px; text-align: center;">
 //           <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            
+
 //             <div style="background-color: #032040; padding: 40px 20px;">
 //               <img src="https://i.imgur.com/lLJeIyu.png" alt="Suku Technologies Logo" style="max-width: 200px; display: block; margin: 0 auto;"/>
 //             </div>
@@ -211,7 +211,7 @@ If you did not sign up with us, please ignore this email.`,
 //       html: `
 //         <div style="font-family: Arial, sans-serif; background-color: #f0f4f7; padding: 20px; text-align: center;">
 //           <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            
+
 //             <div style="background-color: #032040; padding: 40px 20px;">
 //               <img src="https://ik.imagekit.io/w8cwibjr9/suku-logo.jpg" alt="Suku Technologies Logo" style="max-width: 200px; display: block; margin: 0 auto;"/>
 //             </div>
@@ -263,3 +263,81 @@ If you did not sign up with us, please ignore this email.`,
 //     console.error("❌ Error while sending welcome email", error);
 //   }
 // };
+
+
+
+// sendGrid
+import sgMail from '@sendgrid/mail';
+import { SENDGRID_API_KEY, SMTP_USER } from '../config/env.js'; // Assuming SMTP_USER is your verified 'from' email
+
+// Set the API Key
+// Note: In a real application, you'd set this once, possibly when your app starts.
+sgMail.setApiKey(SENDGRID_API_KEY);
+
+// The `sendIDEmail` function is similar, but uses sgMail.send()
+export const sendIDEmail = async (email, fullName, staffID, role) => {
+  try {
+    // The message object for SendGrid
+    const msg = {
+      to: email, // Recipient's email address
+      from: SMTP_USER, // A verified sender email in your SendGrid account
+      subject: "👋 Welcome to Suku Technologies – Your ID is Here!",
+      // Plain text content
+      text: `Hello ${fullName}, welcome to Suku Technologies!
+
+Your Check-In/Check-Out ID is: ${staffID}
+Role: ${role}
+
+Use this ID to check in and out whenever you arrive at or leave the workplace.
+
+If you did not sign up with us, please ignore this email.`,
+      // HTML content
+      html: `
+        <div style="font-family: Arial, sans-serif; background-color: #f0f4f7; padding: 20px; text-align: center;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            
+            <div style="background-color: #032040; padding: 40px 20px;">
+              <img src="https://ik.imagekit.io/w8cwibjr9/WhatsApp_Image_2025-09-03_at_10.14.43_53cd1085-removebg-preview.png" alt="Suku Technologies Logo" style="max-width: 200px; display: block; margin: 0 auto;"/>
+            </div>
+
+                        <div style="padding: 24px; line-height: 1.6; background-image: url('https://ik.imagekit.io/w8cwibjr9/Background1.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; background-color: #f0f4f7;">
+                            <div style="background-color: rgba(255, 255, 255, 0.7); padding: 10px;">
+                <h2 style="color: #2d7ff9; margin-top: 0;">👋 Welcome to Suku Technologies, <strong>${fullName}</strong>!</h2>
+
+                <p style="font-size: 16px; color: #333;">We're thrilled to have you join our team as a <strong>${role}</strong>.</p>
+
+                <p style="font-size: 16px; color: #333;">🔑 Your Check-In/Check-Out ID:</p>
+                <p style="font-size: 28px; font-weight: bold; color: #2d7ff9; margin: 10px 0;"><strong>${staffID}</strong></p>
+
+                <p style="font-size: 16px; color: #333;">
+                  Please use this unique ID to Check In and Check Out whenever you arrive at or leave the office.
+                </p>
+              </div>
+            </div>
+
+            <div style="background-color: #f0f4f7; color: #888; font-size: 12px; padding: 20px; border-top: 1px solid #e1e1e1;">
+              <p style="margin: 0 0 5px;">Suku Technologies</p>
+              <p style="margin: 0 0 5px;">21 King Tackie Ave, Hilla Limann Hwy, Accra</p>
+              <p style="margin: 0;">
+                <a href="https://client1.sukutechnologies.com/" style="color: #2d7ff9; text-decoration: none;">sukutechnologies.com</a>
+              </p>
+            </div>
+
+            <div style="padding: 10px 20px; background-color: #032040; color: #fff; font-size: 10px; text-align: center;">
+              <p style="margin: 0;">If you did not register with us, please ignore this email.</p>
+            </div>
+
+          </div>
+        </div>
+      `,
+    };
+
+    // Send the email
+    const response = await sgMail.send(msg);
+
+    console.log("Message sent:", response[0].statusCode);
+    // Note: SendGrid doesn't provide a 'Preview URL' like Ethereal/Nodemailer's testing utility.
+  } catch (error) {
+    console.error("❌ Error while sending welcome email", error.response?.body || error);
+  }
+};
